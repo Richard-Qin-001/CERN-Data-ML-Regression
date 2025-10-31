@@ -36,10 +36,10 @@ def draw_chart(df):
     df_signal = df[df['Q_prod'] == -1]
     df_background = df[df['Q_prod'] == 1]
     sns.histplot(
-        df_signal['M'], bins=100, kde = False, color = 'green', alpha=0.6, label = "$Q_1 \cdot Q_2 = -1$(Signal Candidate)"
+        df_signal['M'], bins=100, kde = False, color = 'green', alpha=0.6, label = r"$Q_1 \cdot Q_2 = -1$(Signal Candidate)"
     )
     sns.histplot(
-        df_background['M'], bins=100, kde = False, color = 'red', alpha=0.6, label = "$Q_1 \cdot Q_2 = +1$(Bachground Candidate)"
+        df_background['M'], bins=100, kde = False, color = 'red', alpha=0.6, label = r"$Q_1 \cdot Q_2 = +1$(Background Candidate)"
     )
     plt.title("Invariant Mass (M) Distribute by Charge Product ($Q_{prod}$)", fontsize = 18)
     plt.xlabel("Invariant Mass (GeV)",fontsize=14)
@@ -56,7 +56,7 @@ def draw_chart(df):
     plt.xlabel("pt1 (GeV)", fontsize=14)
     plt.ylabel('Number of Events', fontsize=14)
     plt.xlim(0, 150)
-    plt.legend()
+    # plt.legend()
     plt.grid(axis='y', alpha=0.5)
     plt.show()
 
@@ -118,6 +118,22 @@ def visualization_dt(y_test, y_pred_dt):
              color='red', linestyle='--', linewidth=2, label='Ideal Prediction (y=x)')
 
     plt.title("Decision Tree Regression: Predicted & Actual Invariant Mass (M)", fontsize=14)
+    plt.xlabel("Actual Invariant Mass (GeV)", fontsize=12)
+    plt.ylabel("Predicted Invariant Mass (GeV)", fontsize=12)
+    plt.legend(fontsize=10)
+    plt.grid(True, linestyle=':', alpha=0.6)
+    plt.show()
+
+def visualization_ridge_cv(y_test, y_pred_ridge_cv):
+    plt.figure(figsize=(8, 8))
+    plt.scatter(y_test, y_pred_ridge_cv, alpha=0.3, s=10, label='Predicted & Actual')
+
+    max_val = max(y_test.max(), y_pred_ridge_cv.max())
+    min_val = min(y_test.min(), y_pred_ridge_cv.min())
+    plt.plot([min_val, max_val], [min_val, max_val], 
+             color='red', linestyle='--', linewidth=2, label='Ideal Prediction (y=x)')
+
+    plt.title("RidgeCV: Predicted & Actual Invariant Mass (M)", fontsize=14)
     plt.xlabel("Actual Invariant Mass (GeV)", fontsize=12)
     plt.ylabel("Predicted Invariant Mass (GeV)", fontsize=12)
     plt.legend(fontsize=10)
