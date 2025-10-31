@@ -1,7 +1,6 @@
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import mean_squared_error, r2_score
-from LinearRegression import data_split
-from data_prep import load_data_from_db
+from data_prep import load_data_from_db, data_split
 from visualization import visualization_knn
 
 def train_knn(X_train_scaled, X_test_scaled, y_train, y_test):
