@@ -140,6 +140,22 @@ def visualization_ridge_cv(y_test, y_pred_ridge_cv):
     plt.grid(True, linestyle=':', alpha=0.6)
     plt.show()
 
+def visualization_random_forest(y_test, y_pred_random_forest):
+    plt.figure(figsize=(8, 8))
+    plt.scatter(y_test, y_pred_random_forest, alpha=0.3, s=10, label='Predicted & Actual')
+
+    max_val = max(y_test.max(), y_pred_random_forest.max())
+    min_val = min(y_test.min(), y_pred_random_forest.min())
+    plt.plot([min_val, max_val], [min_val, max_val], 
+             color='red', linestyle='--', linewidth=2, label='Ideal Prediction (y=x)')
+
+    plt.title("Random Forest Regression: Predicted & Actual Invariant Mass (M)", fontsize=14)
+    plt.xlabel("Actual Invariant Mass (GeV)", fontsize=12)
+    plt.ylabel("Predicted Invariant Mass (GeV)", fontsize=12)
+    plt.legend(fontsize=10)
+    plt.grid(True, linestyle=':', alpha=0.6)
+    plt.show()
+
 if __name__ == "__main__":
     df = load_csv()
     draw_chart(df)
