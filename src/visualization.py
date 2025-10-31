@@ -78,14 +78,30 @@ def draw_chart(df):
 
 def visualization_linear_regression(y_test, y_pred_linear):
     plt.figure(figsize=(8, 8))
-    plt.scatter(y_test, y_pred_linear, alpha=0.3, s=10, label='Predicted vs. Actual')
+    plt.scatter(y_test, y_pred_linear, alpha=0.3, s=10, label='Predicted & Actual')
 
     max_val = max(y_test.max(), y_pred_linear.max())
     min_val = min(y_test.min(), y_pred_linear.min())
     plt.plot([min_val, max_val], [min_val, max_val], 
              color='red', linestyle='--', linewidth=2, label='Ideal Prediction (y=x)')
 
-    plt.title("Linear Regression: Predicted vs. Actual Invariant Mass (M)", fontsize=14)
+    plt.title("Linear Regression: Predicted & Actual Invariant Mass (M)", fontsize=14)
+    plt.xlabel("Actual Invariant Mass (GeV)", fontsize=12)
+    plt.ylabel("Predicted Invariant Mass (GeV)", fontsize=12)
+    plt.legend(fontsize=10)
+    plt.grid(True, linestyle=':', alpha=0.6)
+    plt.show()
+
+def visualization_knn(y_test, y_pred_knn):
+    plt.figure(figsize=(8, 8))
+    plt.scatter(y_test, y_pred_knn, alpha=0.3, s=10, label='Predicted & Actual')
+
+    max_val = max(y_test.max(), y_pred_knn.max())
+    min_val = min(y_test.min(), y_pred_knn.min())
+    plt.plot([min_val, max_val], [min_val, max_val], 
+             color='red', linestyle='--', linewidth=2, label='Ideal Prediction (y=x)')
+
+    plt.title("KNeighbors Regression: Predicted & Actual Invariant Mass (M)", fontsize=14)
     plt.xlabel("Actual Invariant Mass (GeV)", fontsize=12)
     plt.ylabel("Predicted Invariant Mass (GeV)", fontsize=12)
     plt.legend(fontsize=10)
