@@ -26,6 +26,17 @@ def df2db(df):
     conn.close()
     print("The data has been successfully stored in the 'electron_events' table in cern_data.db.")
 
+def load_data_from_db():
+    conn = sqlite3.connect(config.DATABASE_PATH)
+    try:
+        df_loaded = pd.read_sql_query("SELECT * FROM electron_events", conn)
+        print(f"Data has been successfully loaded from the database. Total rows: {df_loaded.shape[0]}")
+    except Exception as e:
+        print(f"Error: Unable to load data from the database. Please check the table name and database file. Error message: {e}")
+        exit(0)
+    conn.close()
+    return df_loaded
+
 if __name__ == "__main__":
     df = load_csv()
     df2db(df)
