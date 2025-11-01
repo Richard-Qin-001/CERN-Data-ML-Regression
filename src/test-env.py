@@ -16,3 +16,10 @@ print(tf.__version__)
 import tensorflow as tf
 print(f"TensorFlow 版本: {tf.__version__}")
 print(f"GPU 是否可用: {tf.config.list_physical_devices('GPU')}")
+
+import pysr
+print(pysr.__version__)
+
+import julia
+julia.install()
+print(julia.__version__)

@@ -2,9 +2,10 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from sklearn.metrics import mean_squared_error, r2_score
+from collections import defaultdict
 import numpy as np
 from data_prep import load_data_from_db, data_split
-from visualization import visualization_ann
+from visualization import visualization_ann, plot_permutation_importance
 
 class ANNRegressor(nn.Module):
     def __init__(self, input_size, *args, **kwargs):
@@ -67,10 +68,55 @@ def train_ann_pytorch(X_train_scaled, X_test_scaled, y_train, y_test):
     print("\nANN Regression Model Performance: ")
     print(f"MSE: {mse_ann_pytorch}")
     print(f"R^2: {r2_ann_pytorch}")
-    return y_pred_ann_pytorch
+    return y_pred_ann_pytorch, model
+
+def calculate_permutation_importance(model, X_test_scaled, y_test, X_test_df, device):
+    model.eval()
+    with torch.no_grad():
+        X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32).to(device)
+        y_pred_baseline = model(X_test_tensor).cpu().numpy().flatten()
+        baseline_mse = mean_squared_error(y_test, y_pred_baseline)
+    print(f"\nBaseline MSE: {baseline_mse:.4f}")
+
+    feature_names = X_test_df.columns
+    n_features = X_test_scaled.shape[1]
+    importances = defaultdict(list)
+    n_repeats = 5
+
+    for i in range(n_features):
+        feature_name = feature_names[i]
+        for repeat in range(n_repeats):
+            X_permuted = X_test_scaled.copy()
+            X_permuted[:, i] = np.random.permutation(X_permuted[:, i])
+
+            with torch.no_grad():
+                X_permuted_tensor = torch.tensor(X_permuted, dtype=torch.float32).to(device)
+                y_pred_permuted = model(X_permuted_tensor).cpu().numpy().flatten()
+            
+            permuted_mse = mean_squared_error(y_test, y_pred_permuted)
+
+            importance = permuted_mse - baseline_mse
+            importances[feature_name].append(importance)
+    
+    feature_importances = {}
+    for name, imp_list in importances.items():
+        feature_importances[name] = np.mean(imp_list)
+    
+    sorted_importance = sorted(feature_importances.items(), key=lambda item: item[1], reverse=True)
+
+    print("\nPermutation Feature Importance: ")
+    print("Importance score indicates: the increase of MSE relative to the baseline. The higher the score, the more important the feature.")
+    for name, importance in sorted_importance:
+        print(f"{name:<15}: {importance:.4f}")
+
+    plot_permutation_importance(sorted_importance)
+
+    return sorted_importance
+
 
 if __name__ == "__main__":
     df = load_data_from_db()
-    X_train_scaled, X_test_scaled, y_train, y_test = data_split(df)
-    y_pred_ann_pytorch = train_ann_pytorch(X_train_scaled, X_test_scaled, y_train, y_test)
+    X_train_scaled, X_test_scaled, y_train, y_test, X_test_df = data_split(df)
+    y_pred_ann_pytorch, model_ann_pytorch = train_ann_pytorch(X_train_scaled, X_test_scaled, y_train, y_test)
     visualization_ann(y_test, y_pred_ann_pytorch)
+    calculate_permutation_importance(model_ann_pytorch, X_test_scaled, y_test, X_test_df, torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))

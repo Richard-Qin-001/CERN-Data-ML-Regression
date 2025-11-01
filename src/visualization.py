@@ -188,6 +188,18 @@ def visualization_ann(y_test, y_pred_ann):
     plt.grid(True, linestyle=':', alpha=0.6)
     plt.show()
 
+def plot_permutation_importance(sorted_importance):
+    names = [item[0] for item in sorted_importance]
+    scores = [item[1] for item in sorted_importance]
+    
+    plt.figure(figsize=(10, 8))
+    sns.barplot(x=scores, y=names, palette="viridis")
+    plt.title("Permutation Feature Importance (ANN Model)", fontsize=16)
+    plt.xlabel("Increase in MSE (Permutation Importance Score)", fontsize=12)
+    plt.ylabel("Feature", fontsize=12)
+    plt.grid(axis='x', linestyle=':', alpha=0.7)
+    plt.show()
+
 if __name__ == "__main__":
     df = load_csv()
     draw_chart(df)
