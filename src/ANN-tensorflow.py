@@ -40,7 +40,7 @@ def train_ann(X_train_scaled, X_test_scaled, y_train, y_test, input_dim):
 
 if __name__ == "__main__":
     df = load_data_from_db()
-    X_train_scaled, X_test_scaled, y_train, y_test = data_split(df)
+    X_train_scaled, X_test_scaled, y_train, y_test, _ = data_split(df)
     input_dim = X_train_scaled.shape[1]
     y_pred_ann = train_ann(X_train_scaled, X_test_scaled, y_train, y_test, input_dim)
     visualization_ann(y_test, y_pred_ann)

@@ -119,7 +119,7 @@ def symbolic_regression_data_prep():
     return X_train_sr, X_test_sr, Y_train_sr, Y_test_sr, new_core_features
 
 if __name__ == "__main__":
-    # df = load_csv()
-    # df2db(df)
+    df = load_csv()
+    df2db(df)
     df_sr = load_csv_sr()
     df2db_sr(df_sr)

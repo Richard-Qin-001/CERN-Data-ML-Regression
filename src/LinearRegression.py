@@ -20,6 +20,6 @@ def train_lr(X_train_scaled, X_test_scaled, y_train, y_test):
 
 if __name__ == "__main__":
     df = load_data_from_db()
-    X_train_scaled, X_test_scaled, y_train, y_test = data_split(df)
+    X_train_scaled, X_test_scaled, y_train, y_test, _ = data_split(df)
     y_pred_linear = train_lr(X_train_scaled, X_test_scaled, y_train, y_test)
     visualization_linear_regression(y_test, y_pred_linear)
